@@ -6,7 +6,7 @@
 /*   By: csalamit <csalamit@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/02 11:27:11 by csalamit          #+#    #+#             */
-/*   Updated: 2026/06/02 20:35:00 by csalamit         ###   ########.fr       */
+/*   Updated: 2026/06/03 11:51:47 by csalamit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,9 +82,7 @@ double ft_fabs(double x) {
     return (x);
 }
 
-void ft_printf_hex() {
-	
-}
+
 
 double ft_sin(double x) {
     double term;
@@ -101,4 +99,49 @@ double ft_sin(double x) {
         i++;
     }
     return (sum);
+}
+
+void ft_printf_hex(unsigned char byte) {
+
+	char *hex_digits = "0123456789abcdef";
+	char first_digit = hex_digits[(byte >> 4) & 0x0F];
+	char second_digit = hex_digits[byte & 0x0F];
+	write(1, &first_digit, 1);
+	write(1, &second_digit, 1);
+}
+
+unsigned char   *read_fd(int fd, size_t *out_len) {
+	unsigned char *buf = NULL;
+	unsigned char tmp[4096];
+	size_t total = 0;
+	ssize_t n;
+
+	while ((n = read(fd, tmp, 4096)) > 0) {
+		unsigned char *new = ft_realloc(buf, total, total +(size_t)n);
+		if(!new) {free(buf); *out_len = 0; return NULL;}
+		ft_memcpy(new+ total, tmp, (size_t)n);buf = new;total += (size_t)n;
+	}
+	*out_len = total;
+	return (buf);
+}
+
+void	*ft_realloc(void *ptr, size_t old_size, size_t new_size)
+{
+	void	*new_ptr;
+
+	if (new_size == 0) {
+		free(ptr); return (NULL);
+	}
+	if (!ptr) {return (malloc(new_size));}
+	if (new_size == old_size) {return (ptr);}
+	new_ptr = malloc(new_size);
+	if (!new_ptr) {
+		free(ptr); return (NULL);
+	}
+	if (old_size < new_size)
+		ft_memcpy(new_ptr, ptr, old_size);
+	else
+		ft_memcpy(new_ptr, ptr, new_size);
+	free(ptr);
+	return (new_ptr);
 }

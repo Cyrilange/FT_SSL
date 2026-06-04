@@ -59,6 +59,7 @@ double ft_sin(double x);
 void ft_printf_hex(unsigned char byte);
 unsigned char   *read_fd(int fd, size_t *out_len);
 void	*ft_realloc(void *ptr, size_t old_size, size_t new_size);
+void	print_flag(t_flags f, char *algo, unsigned char *d, int len, char *str, int is_file);
 
 /*
 --------md5

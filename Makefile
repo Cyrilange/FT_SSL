@@ -6,7 +6,7 @@ OBJ_DIR     := objs
 CC          := cc
 CFLAGS      := -Wall -Wextra -Werror -MMD -MP
 
-SRCS        := main.c utils.c md5.c
+SRCS        := main.c utils.c md5.c sha256.c print_algo.c
 SRCS        := $(addprefix $(SRC_DIR)/, $(SRCS))
 OBJS        := $(SRCS:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
 DEPS        := $(OBJS:.o=.d)
@@ -28,7 +28,6 @@ $(NAME): $(OBJS)
 	@printf "\n$(CLR_YLW) Linking $(NAME)...$(CLR_EASE)"
 	@$(CC) $(CFLAGS) $(OBJS) -o $(NAME)
 	@printf "\r$(CLR_GRN) Build successful: ./$(NAME)%-20s\n\n$(CLR_EASE)" ""
-	@printf "$(CLR_CYN)WELCOME TO FT_SSL\n$(CLR_EASE)"
 	@printf "$(CLR_CYN)usage: ft_ssl command [flag or not] [file/string]\n$(CLR_EASE)"
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c

@@ -6,7 +6,7 @@
 /*   By: csalamit <csalamit@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/02 11:27:11 by csalamit          #+#    #+#             */
-/*   Updated: 2026/06/03 11:51:47 by csalamit         ###   ########.fr       */
+/*   Updated: 2026/06/04 18:20:01 by csalamit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,18 +111,35 @@ void ft_printf_hex(unsigned char byte) {
 }
 
 unsigned char   *read_fd(int fd, size_t *out_len) {
-	unsigned char *buf = NULL;
-	unsigned char tmp[4096];
-	size_t total = 0;
-	ssize_t n;
+    unsigned char   *buf = NULL;
+    unsigned char   tmp[4096];
+    size_t          total = 0;
+    ssize_t         n;
 
-	while ((n = read(fd, tmp, 4096)) > 0) {
-		unsigned char *new = ft_realloc(buf, total, total +(size_t)n);
-		if(!new) {free(buf); *out_len = 0; return NULL;}
-		ft_memcpy(new+ total, tmp, (size_t)n);buf = new;total += (size_t)n;
-	}
-	*out_len = total;
-	return (buf);
+    while ((n = read(fd, tmp, 4096)) > 0) {
+        unsigned char *new = ft_realloc(buf, total, total + (size_t)n + 1);
+        if (!new) {
+            free(buf);
+            *out_len = 0;
+            return NULL;
+        }
+        buf = new;
+        ft_memcpy(buf + total, tmp, (size_t)n);
+        total += (size_t)n;
+    }
+
+    if (!buf) {
+        buf = malloc(1);
+        if (!buf)
+        {
+            *out_len = 0;
+            return NULL;
+        }
+    }
+
+    buf[total] = '\0';
+    *out_len = total;
+    return buf;
 }
 
 void	*ft_realloc(void *ptr, size_t old_size, size_t new_size)

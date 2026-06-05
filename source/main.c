@@ -6,7 +6,7 @@
 /*   By: csalamit <csalamit@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/03 11:33:04 by csalamit          #+#    #+#             */
-/*   Updated: 2026/06/05 11:50:40 by csalamit         ###   ########.fr       */
+/*   Updated: 2026/06/05 12:25:05 by csalamit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ static void	launch_sha256(t_flags flag, char *str, int fd, unsigned char *buf, s
 	}
 }
 
-static int	open_file(char *filename) {
+static int	open_file(char *algo, char *filename) {
 	int	fd;
 
 	if (!filename) {
@@ -66,6 +66,8 @@ static int	open_file(char *filename) {
 	fd = open(filename, O_RDONLY);
 	if (fd < 0) {
 		ft_error("ft_ssl: ");
+		ft_error(algo);
+		ft_error(" : ");
 		ft_error(filename);
 		ft_error(": No such file or directory\n");
 		return (-1);
@@ -122,14 +124,20 @@ int	main(int argc, char **argv) {
 	if (flags.p) {
 		unsigned char	*content;
 		size_t			len;
+		char			saved;
 
 		content = read_fd(0, &len);
 		if (content) {
+			size_t	hash_len = len;
+			saved = 0;
 			if (len > 0 && content[len - 1] == '\n') {
+				saved = content[len - 1];
 				content[len - 1] = '\0';
 				len--;
 			}
-			hash_functions[cmd_idx](flags, (char *)content, -1, content, len);
+			if (saved)
+				content[len] = saved;
+			hash_functions[cmd_idx](flags, (char *)content, -1, content, hash_len);
 			free(content);
 		}
 	}
@@ -143,7 +151,7 @@ int	main(int argc, char **argv) {
 	}
 	if (arg_idx < argc) {
 		while (arg_idx < argc) {
-			int fd = open_file(argv[arg_idx]);
+			int fd = open_file(commands[cmd_idx], argv[arg_idx]);
 			if (fd >= 0) {
 				hash_functions[cmd_idx](flags, argv[arg_idx], fd, NULL, 0);
 				close_file(fd);

@@ -45,6 +45,7 @@ typedef struct s_flags {
    // char  *s_arg; // Stocke char that follow   -s
 } t_flags;
 
+
 /*
 ---------UTILS
 */

@@ -6,7 +6,7 @@
 /*   By: csalamit <csalamit@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/04 10:08:07 by csalamit          #+#    #+#             */
-/*   Updated: 2026/06/05 11:49:15 by csalamit         ###   ########.fr       */
+/*   Updated: 2026/06/05 12:09:38 by csalamit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,10 +22,13 @@ static void	print_digest(unsigned char *d, int len) {
 
 void	print_flag(t_flags f, char *algo, unsigned char *d, int len, char *str, int is_file) {
 	if (is_file == -1) {
-		write(1, "(\"", 2);
-		if (str)
-			write(1, str, ft_strlen(str));
-		write(1, "\")= ", 4);
+		size_t	slen = str ? ft_strlen(str) : 0;
+		if (slen > 0 && str[slen - 1] == '\n') slen--;
+		if (!f.q) {
+			write(1, "(\"", 2);
+			if (str) write(1, str, slen);
+			write(1, "\")= ", 4);
+		}
 		print_digest(d, len);
 		write(1, "\n", 1);
 		return ;
@@ -51,13 +54,14 @@ void	print_flag(t_flags f, char *algo, unsigned char *d, int len, char *str, int
 		return ;
 	}
 	if (is_file == 1) {
-		write(1, algo, ft_strlen(algo));
-		if (str) {
+		if (!str) {
+			write(1, "(stdin)= ", 9);
+		} else {
+			write(1, algo, ft_strlen(algo));
 			write(1, " (", 2);
 			write(1, str, ft_strlen(str));
 			write(1, ") = ", 4);
-		} else
-			write(1, "(stdin)= ", 9);
+		}
 	} else if (is_file == 0) {
 		write(1, algo, ft_strlen(algo));
 		write(1, " (\"", 3);
